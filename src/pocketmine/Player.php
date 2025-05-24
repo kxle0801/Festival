@@ -3603,5 +3603,5 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		$batch->isEncoded = true;
 		return $batch;
 	}
->>>>>>> 4ae3172 (added discord webhook support)
+
 }
