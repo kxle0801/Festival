@@ -131,8 +131,6 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextWrapper;
 use pocketmine\utils\Utils;
 use pocketmine\utils\VersionString;
-<<<<<<< HEAD
-=======
 use pocketmine\event\TextContainer;
 
 use function array_key_exists;
@@ -141,7 +139,7 @@ use function array_sum;
 use function asort;
 use function base64_encode;
 use function class_exists;
-use function cleanPath;
+use function pocketmine\cleanPath;
 use function cli_set_process_title;
 use function count;
 use function define;
@@ -155,7 +153,7 @@ use function function_exists;
 use function gc_collect_cycles;
 use function getmypid;
 use function getopt;
-use function getTrace;
+use function pocketmine\getTrace;
 use function implode;
 use function ini_set;
 use function is_array;
@@ -1890,7 +1888,6 @@ class Server{
 			}
 	
 			$this->enablePlugins(PluginLoadOrder::POSTWORLD);
-	
 			$this->start();
 		}catch(\Exception $e){
 			$this->exceptionHandler($e);
