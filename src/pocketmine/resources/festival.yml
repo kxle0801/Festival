@@ -11,3 +11,8 @@ network-improvements:
 level-improvements:
  #Enable or disable nether reactor
  enable-reactor: false
+
+other:
+ #Discord webhook link where chat messages will be send to. Empty for none.
+ discord-webhook-link: ""
+ discord-webhook-name: "Festival Chat"

@@ -115,6 +115,7 @@ use pocketmine\plugin\PluginLoadOrder;
 use pocketmine\plugin\PluginManager;
 use pocketmine\plugin\ScriptPluginLoader;
 use pocketmine\scheduler\FileWriteTask;
+use pocketmine\scheduler\SendToDiscordTask;
 use pocketmine\scheduler\ServerScheduler;
 use pocketmine\tile\Chest;
 use pocketmine\tile\Furnace;
@@ -130,6 +131,72 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextWrapper;
 use pocketmine\utils\Utils;
 use pocketmine\utils\VersionString;
+<<<<<<< HEAD
+=======
+use pocketmine\event\TextContainer;
+
+use function array_key_exists;
+use function array_shift;
+use function array_sum;
+use function asort;
+use function base64_encode;
+use function class_exists;
+use function cleanPath;
+use function cli_set_process_title;
+use function count;
+use function define;
+use function explode;
+use function extension_loaded;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function floor;
+use function function_exists;
+use function gc_collect_cycles;
+use function getmypid;
+use function getopt;
+use function getTrace;
+use function implode;
+use function ini_set;
+use function is_array;
+use function is_bool;
+use function is_subclass_of;
+use function kill;
+use function max;
+use function microtime;
+use function min;
+use function mkdir;
+use function pcntl_signal;
+use function pcntl_signal_dispatch;
+use function realpath;
+use function register_shutdown_function;
+use function rename;
+use function round;
+use function spl_object_hash;
+use function str_replace;
+use function stripos;
+use function strlen;
+use function strpos;
+use function strtolower;
+use function substr;
+use function time;
+use function time_sleep_until;
+use function touch;
+use function trim;
+use function unlink;
+use function unpack;
+use function zlib_encode;
+use const DIRECTORY_SEPARATOR;
+use const E_ERROR;
+use const E_USER_ERROR;
+use const E_USER_WARNING;
+use const E_WARNING;
+use const PHP_INT_MAX;
+use const PHP_INT_SIZE;
+use const SIGHUP;
+use const SIGINT;
+use const SIGTERM;
+use const ZLIB_ENCODING_DEFLATE;
 
 /**
  * The class that manages everything
@@ -139,7 +206,10 @@ class Server{
 	const BROADCAST_CHANNEL_USERS = "pocketmine.broadcast.user";
 	
 	public static $mainmenuinfo = "0.11.1";
-	
+	public static $enableDiscordWebhook = false;
+	public static $discordWebhookLink = "";
+	public static $webhookName = "Festival Chat";
+
 	/** @var Server */
 	private static $instance = \null;
 
@@ -1625,7 +1695,12 @@ class Server{
 			"rcon.password" => \substr(\base64_encode(@Utils::getRandomBytes(20, \false)), 3, 10),
 			"auto-save" => \true,
 		]);
-		NetherReactor::$enableReactor = $this->getExtraProperty("level-improvements.enable-reactor", \false);
+
+		$url = $this->getExtraProperty("other.discord-webhook-link");
+		Server::$enableDiscordWebhook = is_string($url) && strlen($url) > 0;
+		Server::$discordWebhookLink = $url;
+		Server::$webhookName = $this->getExtraProperty("other.discord-webhook-name");
+		NetherReactor::$enableReactor = $this->getExtraProperty("level-improvements.enable-reactor", false);
 		Server::$mainmenuinfo = $this->getExtraProperty("network-improvements.main-menu-info", MINECRAFT_VERSION_NETWORK);
 		$this->forceLanguage = $this->getProperty("settings.force-language", \false);
 		$this->baseLang = new BaseLang($this->getProperty("settings.language", BaseLang::FALLBACK_LANGUAGE));
@@ -1634,7 +1709,7 @@ class Server{
 		$this->memoryManager = new MemoryManager($this);
 
 		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.start", [TextFormat::AQUA . $this->getVersion()]));
-
+		
 		if(($poolSize = $this->getProperty("settings.async-workers", "auto")) === "auto"){
 			$poolSize = ServerScheduler::$WORKERS;
 			$processors = Utils::getCoreCount() - 2;
@@ -1822,15 +1897,35 @@ class Server{
 		}
 	}
 
+	public function sendToDiscord($message){
+		if(!Server::$enableDiscordWebhook) return;
+		$params = [];
+		if ($message instanceof TextContainer) {
+			if ($message instanceof TranslationContainer) {
+				$params = $message->getParameters();
+			}
+			$message = $message->getText();
+		}
+		
+		$message = $this->getLanguage()->translateString($message, $params);
+		$message = TextFormat::clean($message);
+		$this->getScheduler()->scheduleAsyncTask(new SendToDiscordTask($message));
+	}
+	
 	/**
 	 * @param string        $message
 	 * @param Player[]|null $recipients
 	 *
 	 * @return int
 	 */
-	public function broadcastMessage($message, $recipients = \null){
-		if(!\is_array($recipients)){
-			return $this->broadcast($message, self::BROADCAST_CHANNEL_USERS);
+
+	public function broadcastMessage($message, $recipients = null, $discord = false){
+		if($discord){
+			$this->sendToDiscord($message);
+		}
+
+		if(!is_array($recipients)){
+			return $this->broadcast($message, self::BROADCAST_CHANNEL_USERS, discord: false);
 		}
 
 		/** @var Player[] $recipients */
@@ -1899,7 +1994,10 @@ class Server{
 	 *
 	 * @return int
 	 */
-	public function broadcast($message, $permissions){
+	public function broadcast($message, $permissions, $discord = false){
+		if($discord){
+			$this->sendToDiscord($message);
+		}
 		/** @var CommandSender[] $recipients */
 		$recipients = [];
 		foreach(\explode(";", $permissions) as $permission){
@@ -2122,8 +2220,8 @@ class Server{
 		}
 
 		try{
-			$this->hasStopped = \true;
-
+			$this->hasStopped = true;
+			$this->sendToDiscord("Server stopped");
 			$this->shutdown();
 			if($this->rcon instanceof RCON){
 				$this->rcon->stop();
@@ -2209,7 +2307,8 @@ class Server{
 
 		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.defaultGameMode", [self::getGamemodeString($this->getGamemode())]));
 
-		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.startFinished", [\round(\microtime(\true) - \pocketmine\START_TIME, 3)]));
+		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.startFinished", [round(microtime(true) - \pocketmine\START_TIME, 3)]));
+		$this->sendToDiscord("Server started");
 
 		$this->tickProcessor();
 		$this->forceShutdown();
