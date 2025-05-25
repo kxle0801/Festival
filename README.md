@@ -1,4 +1,4 @@
-# PocketMine-MP 1.5dev-1438 fork
+# PocketMine-MP 1.5dev-1438 fork (alpha 0.11.x)
 Supported versions: 0.11.0-0.11.1 *& prob some builds*
 
 # Features:
