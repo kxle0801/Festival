@@ -9,6 +9,8 @@ Supported versions: 0.11.0-0.11.1 *& prob some builds*
 
 * Some vanilla features which were not added
 
+* Support for webhook messages in Discord
+
 * *and some other bug fixes...*
 
 
