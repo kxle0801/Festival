@@ -2218,7 +2218,7 @@ class Server{
 
 		try{
 			$this->hasStopped = true;
-			$this->sendToDiscord("Server stopped");
+			$this->sendToDiscord("[INFO] Stopping server...");
 			$this->shutdown();
 			if($this->rcon instanceof RCON){
 				$this->rcon->stop();
@@ -2305,7 +2305,7 @@ class Server{
 		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.defaultGameMode", [self::getGamemodeString($this->getGamemode())]));
 
 		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.startFinished", [round(microtime(true) - \pocketmine\START_TIME, 3)]));
-		$this->sendToDiscord("Server started");
+		$this->sendToDiscord("[INFO] Starting Minecraft PE server version v0.11.x alpha");
 
 		$this->tickProcessor();
 		$this->forceShutdown();
