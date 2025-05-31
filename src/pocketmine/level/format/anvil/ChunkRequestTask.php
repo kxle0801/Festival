@@ -68,7 +68,7 @@ class ChunkRequestTask extends AsyncTask{
 		$orderedIds = "";
 		$orderedData = "";
 		$orderedSkyLight = str_repeat("\x00", 16384);
-		$orderedLight = str_repeat("\x00", 16384);
+		$orderedLight = ""; //str_repeat("\x00", 16384);
 
 
 		for($x = 0; $x < 16; ++$x){
@@ -76,7 +76,7 @@ class ChunkRequestTask extends AsyncTask{
 				$orderedIds .= $this->getColumn($ids, $x, $z);
 				$orderedData .= $this->getHalfColumn($meta, $x, $z);
 				//$orderedSkyLight .= $this->getHalfColumn($skyLight, $x, $z);
-				//$orderedLight .= $this->getHalfColumn($blockLight, $x, $z);
+				$orderedLight .= $this->getHalfColumn($blockLight, $x, $z);
 			}
 		}
 
