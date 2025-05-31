@@ -62,7 +62,7 @@ class McRegion extends BaseLevelProvider
         $isValid = (\file_exists($path . "/level.dat") and \is_dir($path . "/region/"));
 
         if ($isValid) {
-            $files = \glob($path . "/region/*.mc*");
+            $files = \glob($path . "/region/*.mc*"); /*nano_broke*/
             foreach ($files as $f) {
                 if (\strpos($f, ".mca") !== \false) { // Anvil
                     $isValid = \false;
@@ -141,7 +141,7 @@ class McRegion extends BaseLevelProvider
         $heightmap = \pack("C*", ...$chunk->getHeightMapArray());
         $biomeColors = \pack("N*", ...$chunk->getBiomeColorArray());
 
-        $ordered = $chunk->getBlockIdArray() . $chunk->getBlockDataArray() . /*$chunk->getBlockSkyLightArray() . $chunk->getBlockLightArray()*/ str_repeat("\x00", 16384*2) . $heightmap . $biomeColors . $tiles;
+        $ordered = $chunk->getBlockIdArray() . $chunk->getBlockDataArray() . str_repeat("\x00", 16384) . $chunk->getBlockLightArray() . $heightmap . $biomeColors . $tiles;
 
         $this->getLevel()->chunkRequestCallback($x, $z, $ordered);
 
