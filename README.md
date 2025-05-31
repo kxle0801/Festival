@@ -1,4 +1,4 @@
-# PocketMine-MP 1.5dev-1438 fork
+# PocketMine-MP 1.5dev-1438 fork (alpha 0.11.x)
 Supported versions: 0.11.0-0.11.1 *& prob some builds*
 
 # Features:
@@ -8,6 +8,8 @@ Supported versions: 0.11.0-0.11.1 *& prob some builds*
 * All blocks *(will be soon)*
 
 * Some vanilla features which were not added
+
+* Support for webhook messages in Discord
 
 * *and some other bug fixes...*
 
