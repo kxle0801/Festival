@@ -152,10 +152,8 @@ class AsyncPool{
 
 				$this->removeTask($task);
 			}elseif($task->isTerminated()){
-				$info = $task->getTerminationInfo();
+				$this->server->getLogger()->critical("Could not execute asynchronous task " . (new \ReflectionClass($task))->getShortName() . ": Task crashed");
 				$this->removeTask($task, \true);
-				$this->server->getLogger()->critical("Could not execute asynchronous task " . (new \ReflectionClass($task))->getShortName() . ": " . $info["message"]);
-				$this->server->getLogger()->critical("On ".$info["scope"].", line ".$info["line"] .", ".$info["function"]."()");
 			}
 		}
 
