@@ -867,6 +867,21 @@ class Item{
 		}
 	}
 
+	public static function strToIdMeta($str){
+		$b = \explode(":", \str_replace(" ", "_", \trim($str)));
+		$meta = !isset($b[1]) ? 0 : ($b[1] & 0xFFFF);
+		if(\defined(Item::class . "::" . \strtoupper($b[0]))){
+			$item = self::get(\constant(Item::class . "::" . \strtoupper($b[0])), $meta);
+			if($item->getId() === self::AIR and \strtoupper($b[0]) !== "AIR"){
+				return [0, $meta];
+			}
+			return [$item->getId(), $meta];
+		}else{
+			return [(int)($b[0] & 0xFFFF), $meta];
+		}
+		
+	}
+
 	public static function fromString($str, $multiple = \false){
 		if($multiple === \true){
 			$blocks = [];
