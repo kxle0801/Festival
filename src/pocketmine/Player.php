@@ -1,23 +1,6 @@
 <?php
 
-/*
- *
- * ____ _ _ __ __ _ __ __ ____
- * | _ \ ___ ___| | _____| |_| \/ (_)_ __ ___ | \/ | _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * | __/ (_) | (__| < __/ |_| | | | | | | | __/_____| | | | __/
- * |_| \___/ \___|_|\_\___|\__|_| |_|_|_| |_|\___| |_| |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
- *
- */
+
 namespace pocketmine;
 
 use pocketmine\block\Block;
@@ -129,172 +112,172 @@ use pocketmine\utils\Utils;
 class Player extends Human implements CommandSender, InventoryHolder, ChunkLoader, IPlayer
 {
 
-    const SURVIVAL = 0;
+	const SURVIVAL = 0;
 
-    const CREATIVE = 1;
+	const CREATIVE = 1;
 
-    const ADVENTURE = 2;
+	const ADVENTURE = 2;
 
-    const SPECTATOR = 3;
+	const SPECTATOR = 3;
 
-    const VIEW = Player::SPECTATOR;
+	const VIEW = Player::SPECTATOR;
 
-    const SURVIVAL_SLOTS = 36;
+	const SURVIVAL_SLOTS = 36;
 
-    const CREATIVE_SLOTS = 112;
+	const CREATIVE_SLOTS = 112;
 
-    /** @var SourceInterface */
-    protected $interface;
+	/** @var SourceInterface */
+	protected $interface;
 
-    public $spawned = \false;
+	public $spawned = \false;
 
-    public $loggedIn = \false;
+	public $loggedIn = \false;
 
-    public $gamemode;
+	public $gamemode;
 
-    public $lastBreak;
+	public $lastBreak;
 
-    protected $windowCnt = 2;
+	protected $windowCnt = 2;
 
-    /** @var \SplObjectStorage<Inventory> */
-    protected $windows;
+	/** @var \SplObjectStorage<Inventory> */
+	protected $windows;
 
-    /** @var Inventory[] */
-    protected $windowIndex = [];
+	/** @var Inventory[] */
+	protected $windowIndex = [];
 
-    protected $messageCounter = 2;
+	protected $messageCounter = 2;
 
-    protected $sendIndex = 0;
+	protected $sendIndex = 0;
 
-    /** @var Vector3 */
-    public $speed = \null;
+	/** @var Vector3 */
+	public $speed = \null;
 
-    public $blocked = \false;
+	public $blocked = \false;
 
-    public $achievements = [];
+	public $achievements = [];
 
-    public $lastCorrect;
+	public $lastCorrect;
 
-    /** @var SimpleTransactionGroup */
-    protected $currentTransaction = \null;
+	/** @var SimpleTransactionGroup */
+	protected $currentTransaction = \null;
 
-    public $craftingType = 0;
+	public $craftingType = 0;
 
-    // 0 = 2x2 crafting, 1 = 3x3 crafting, 2 = stonecutter
-    protected $isCrafting = \false;
+	// 0 = 2x2 crafting, 1 = 3x3 crafting, 2 = stonecutter
+	protected $isCrafting = \false;
 
-    /**
-     *
-     * @deprecated
-     * @var array
-     */
-    public $loginData = [];
+	/**
+	 *
+	 * @deprecated
+	 * @var array
+	 */
+	public $loginData = [];
 
-    public $creationTime = 0;
+	public $creationTime = 0;
 
-    protected $randomClientId;
+	protected $randomClientId;
 
-    protected $uuid;
+	protected $uuid;
 
-    protected $lastMovement = 0;
+	protected $lastMovement = 0;
 
-    /** @var Vector3 */
-    protected $forceMovement = \null;
+	/** @var Vector3 */
+	protected $forceMovement = \null;
 
-    /** @var Vector3 */
-    protected $teleportPosition = \null;
+	/** @var Vector3 */
+	protected $teleportPosition = \null;
 
-    protected $connected = \true;
+	protected $connected = \true;
 
-    protected $ip;
+	protected $ip;
 
-    protected $removeFormat = \true;
+	protected $removeFormat = \true;
 
-    protected $port;
+	protected $port;
 
-    protected $username;
+	protected $username;
 
-    protected $iusername;
+	protected $iusername;
 
-    protected $displayName;
+	protected $displayName;
 
-    protected $startAction = - 1;
+	protected $startAction = - 1;
 
-    /** @var Vector3 */
-    protected $sleeping = \null;
+	/** @var Vector3 */
+	protected $sleeping = \null;
 
-    protected $clientID = \null;
+	protected $clientID = \null;
 
-    private $loaderId = \null;
+	private $loaderId = \null;
 
-    protected $stepHeight = 0.6;
+	protected $stepHeight = 0.6;
 
-    public $usedChunks = [];
+	public $usedChunks = [];
 
-    protected $chunkLoadCount = 0;
+	protected $chunkLoadCount = 0;
 
-    protected $loadQueue = [];
+	protected $loadQueue = [];
 
-    protected $nextChunkOrderRun = 5;
+	protected $nextChunkOrderRun = 5;
 
-    /** @var Player[] */
-    protected $hiddenPlayers = [];
+	/** @var Player[] */
+	protected $hiddenPlayers = [];
 
-    /** @var Vector3 */
-    protected $newPosition;
+	/** @var Vector3 */
+	protected $newPosition;
 
-    protected $viewDistance;
+	protected $viewDistance;
 
-    protected $chunksPerTick;
+	protected $chunksPerTick;
 
-    protected $spawnThreshold;
+	protected $spawnThreshold;
 
-    /** @var null|Position */
-    private $spawnPosition = \null;
+	/** @var null|Position */
+	private $spawnPosition = \null;
 
-    protected $inAirTicks = 0;
+	protected $inAirTicks = 0;
 
-    protected $startAirTicks = 5;
+	protected $startAirTicks = 5;
 
-    protected $autoJump = \true;
+	protected $autoJump = \true;
 
-    protected $allowFlight = \false;
+	protected $allowFlight = \false;
 
-    private $needACK = [];
+	private $needACK = [];
 
-    private $batchedPackets = [];
+	private $batchedPackets = [];
 
-    /** @var PermissibleBase */
-    private $perm = \null;
+	/** @var PermissibleBase */
+	private $perm = \null;
 
-    public function getLeaveMessage()
-    {
-        return new TranslationContainer(TextFormat::YELLOW . "%multiplayer.player.left", [
-            $this->getDisplayName()
-        ]);
-    }
+	public function getLeaveMessage()
+	{
+		return new TranslationContainer(TextFormat::YELLOW . "%multiplayer.player.left", [
+			$this->getDisplayName()
+		]);
+	}
 
-    /**
-     * This might disappear in the future.
-     * Please use getUniqueId() instead (IP + clientId + name combo, in the future it'll change to real UUID for online auth)
-     *
-     * @deprecated
-     *
-     */
-    public function getClientId()
-    {
-        return $this->randomClientId;
-    }
+	/**
+	 * This might disappear in the future.
+	 * Please use getUniqueId() instead (IP + clientId + name combo, in the future it'll change to real UUID for online auth)
+	 *
+	 * @deprecated
+	 *
+	 */
+	public function getClientId()
+	{
+		return $this->randomClientId;
+	}
 
-    public function getUniqueId()
-    {
-        return $this->uuid;
-    }
+	public function getUniqueId()
+	{
+		return $this->uuid;
+	}
 
-    public function isBanned()
-    {
-        return $this->server->getNameBans()->isBanned(\strtolower($this->getName()));
-    }
+	public function isBanned()
+	{
+		return $this->server->getNameBans()->isBanned(\strtolower($this->getName()));
+	}
 
 	public function setBanned($value){
 		if ($value === true) {
@@ -3024,9 +3007,9 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	 * flag set to kick without the "Kicked by admin" part instead of this method.
 	 *
 	 * @param string $message
-	 *            Message to be broadcasted
+	 *			Message to be broadcasted
 	 * @param string $reason
-	 *            Reason showed in console
+	 *			Reason showed in console
 	 * @param bool $notify
 	 */
 	public final function close($message = "", $reason = "generic reason", $notify = true)
@@ -3579,11 +3562,11 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	/**
 	 *
 	 * @param
-	 *            $chunkX
+	 *			$chunkX
 	 * @param
-	 *            $chunkZ
+	 *			$chunkZ
 	 * @param
-	 *            $payload
+	 *			$payload
 	 *
 	 * @return DataPacket
 	 */

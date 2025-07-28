@@ -1,23 +1,6 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
- *
-*/
+
 
 /**
  * All the entity classes
@@ -396,7 +379,7 @@ abstract class Entity extends Location implements Metadatable{
 	 * @param int|string $type
 	 * @param FullChunk  $chunk
 	 * @param CompoundTag   $nbt
-	 * @param            $args
+	 * @param $args
 	 *
 	 * @return Entity
 	 */
@@ -571,41 +554,41 @@ abstract class Entity extends Location implements Metadatable{
 	}
 
 	/**
-	 * @param float             $damage
+	 * @param float			 $damage
 	 * @param EntityDamageEvent $source
 	 *
 	 */
-    public function attack($damage, EntityDamageEvent $source){
-        if($this->hasEffect(Effect::FIRE_RESISTANCE)
-            and $source->getCause() === EntityDamageEvent::CAUSE_FIRE
-            and $source->getCause() === EntityDamageEvent::CAUSE_FIRE_TICK
-            and $source->getCause() === EntityDamageEvent::CAUSE_LAVA){
-            $source->setCancelled();
-        }
+	public function attack($damage, EntityDamageEvent $source){
+		if($this->hasEffect(Effect::FIRE_RESISTANCE)
+			and $source->getCause() === EntityDamageEvent::CAUSE_FIRE
+			and $source->getCause() === EntityDamageEvent::CAUSE_FIRE_TICK
+			and $source->getCause() === EntityDamageEvent::CAUSE_LAVA){
+			$source->setCancelled();
+		}
 
-        $this->server->getPluginManager()->callEvent($source);
-        if($source->isCancelled()){
-            return;
-        }
+		$this->server->getPluginManager()->callEvent($source);
+		if($source->isCancelled()){
+			return;
+		}
 
-        $this->setLastDamageCause($source);
+		$this->setLastDamageCause($source);
 
-        $this->setHealth($this->getHealth() - $source->getFinalDamage());
-    }
+		$this->setHealth($this->getHealth() - $source->getFinalDamage());
+	}
 
 	/**
-	 * @param float                   $amount
+	 * @param float				   $amount
 	 * @param EntityRegainHealthEvent $source
 	 *
 	 */
 	public function heal($amount, EntityRegainHealthEvent $source){
-        $this->server->getPluginManager()->callEvent($source);
-        if($source->isCancelled()){
-            return;
-        }
+		$this->server->getPluginManager()->callEvent($source);
+		if($source->isCancelled()){
+			return;
+		}
 
-        $this->setHealth($this->getHealth() + $source->getAmount());
-    }
+		$this->setHealth($this->getHealth() + $source->getAmount());
+	}
 
 	/**
 	 * @return int
@@ -1413,8 +1396,8 @@ abstract class Entity extends Location implements Metadatable{
 
 	/**
 	 * @param Vector3|Position|Location $pos
-	 * @param float                     $yaw
-	 * @param float                     $pitch
+	 * @param float					 $yaw
+	 * @param float					 $pitch
 	 *
 	 * @return bool
 	 */
