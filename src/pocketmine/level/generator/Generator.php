@@ -63,6 +63,11 @@ abstract class Generator
 		return "unknown";
 	}
 
+	public static function fromVanilla(int $v){
+		if($v == 2) return "FLAT";
+		return "DEFAULT"; //$v==1/$v==0 are different(old/new or new/old)
+	}
+
 	/**
 	 *
 	 * @param Noise $noise

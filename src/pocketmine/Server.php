@@ -2249,8 +2249,9 @@ class Server{
 
 			\gc_collect_cycles();
 		}catch(\Exception $e){
+			$this->logger->logException($e);
 			$this->logger->emergency("Crashed while crashing, killing process");
-			@kill(\getmypid());
+			@\pocketmine\kill(\getmypid());
 		}
 
 	}

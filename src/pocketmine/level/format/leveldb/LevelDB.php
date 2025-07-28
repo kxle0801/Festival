@@ -17,6 +17,7 @@ use pocketmine\tile\Spawnable;
 use pocketmine\utils\Binary;
 use pocketmine\utils\ChunkException;
 use pocketmine\utils\LevelException;
+use pocketmine\Server;
 
 class LevelDB extends BaseLevelProvider
 {
@@ -55,11 +56,20 @@ class LevelDB extends BaseLevelProvider
 			throw new LevelException("Invalid level.dat");
 		}
 
-		if (! isset($this->levelData->generatorName)) {
-			$this->levelData->generatorName = new StringTag("generatorName", Generator::getGenerator("DEFAULT"));
+		if (!isset($this->levelData->generatorName)) {
+			$wgen = "DEFAULT";
+			$based = "No Generator property found - world is not vanilla?";
+			if(isset($this->levelData->Generator)){
+				$v = $this->levelData->Generator->getValue();
+				$wgen = Generator::fromVanilla($v);
+				$based = "Generator property value: $v -> $wgen";
+			}
+
+			Server::getInstance()->getLogger()->info("No generatorName property found in levelData. Choosing $wgen($based)");
+			$this->levelData->generatorName = new StringTag("generatorName", $wgen);
 		}
 
-		if (! isset($this->levelData->generatorOptions)) {
+		if (!isset($this->levelData->generatorOptions)) {
 			$this->levelData->generatorOptions = new StringTag("generatorOptions", "");
 		}
 
@@ -122,7 +132,7 @@ class LevelDB extends BaseLevelProvider
 		\file_put_contents($path . "level.dat", \pack("V", 3) . \pack("V", \strlen($buffer)) . $buffer);
 
 		$db = new \LevelDB($path . "/db");
-		$db->close();
+		unset($db);
 	}
 
 	public function saveLevelData()
@@ -357,7 +367,7 @@ class LevelDB extends BaseLevelProvider
 	public function close()
 	{
 		$this->unloadChunks();
-		$this->db->close();
+		unset($this->db);
 		$this->level = \null;
 	}
 }
