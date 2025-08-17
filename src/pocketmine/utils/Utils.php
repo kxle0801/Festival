@@ -97,7 +97,7 @@ class Utils{
 				}
 			}
 		}elseif($os === "android"){
-			$machine .= @\file_get_contents("/system/build.prop");
+			$machine .= @\passthru("getprop ro.product.model");
 		}elseif($os === "mac"){
 			$machine .= `system_profiler SPHardwareDataType | grep UUID`;
 		}
