@@ -35,7 +35,6 @@ class GiveCommand extends VanillaCommand{
 
 		$player = $sender->getServer()->getPlayer($args[0]);
 		$item = Item::fromString($args[1]);
-
 		if(!isset($args[2])){
 			$item->setCount($item->getMaxStackSize());
 		}else{

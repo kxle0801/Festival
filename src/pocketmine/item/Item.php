@@ -884,8 +884,10 @@ class Item{
 				if($item->getId() === self::AIR and \strtoupper($b[0]) !== "AIR"){
 					$item = self::get($b[0] & 0xFFFF, $meta);
 				}
-			}else{
+			}else if(is_int($b[0])){
 				$item = self::get($b[0] & 0xFFFF, $meta);
+			}else{
+				$item = self::get(0, 0);
 			}
 
 			return $item;
