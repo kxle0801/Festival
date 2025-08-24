@@ -1445,21 +1445,21 @@ class Level implements ChunkManager, Metadatable{
 			$ev = new BlockBreakEvent($player, $target, $item, $player->isCreative() ? \true : \false);
 
 			if($player->isSurvival() and $item instanceof Item and !$target->isBreakable($item)){
-                $ev->setCancelled();
-            }elseif(!$player->isOp() and ($distance = $this->server->getSpawnRadius()) > -1){
-                $t = new Vector2($target->x, $target->z);
-                $s = new Vector2($this->getSpawnLocation()->x, $this->getSpawnLocation()->z);
-                if(\count($this->server->getOps()->getAll()) > 0 and $t->distance($s) <= $distance){ //set it to cancelled so plugins can bypass this
-                    $ev->setCancelled();
-                }
-            }
+				$ev->setCancelled();
+			}elseif(!$player->isOp() and ($distance = $this->server->getSpawnRadius()) > -1){
+				$t = new Vector2($target->x, $target->z);
+				$s = new Vector2($this->getSpawnLocation()->x, $this->getSpawnLocation()->z);
+				if(\count($this->server->getOps()->getAll()) > 0 and $t->distance($s) <= $distance){ //set it to cancelled so plugins can bypass this
+					$ev->setCancelled();
+				}
+			}
 
 			$this->server->getPluginManager()->callEvent($ev);
 			if($ev->isCancelled()){
 				return \false;
 			}
 
-			if($this->server->getExtraProperty("other.enable-break-time-validation", false)){
+			if(Server::$breakTimeValidation){
 				$breakTime = $player->isCreative() ? 0.15 : $target->getBreakTime($item);
 				if($player->hasEffect(Effect::SWIFTNESS)){
 					$breakTime *= 0.80 * ($player->getEffect(Effect::SWIFTNESS)->getAmplifier() + 1);
@@ -1472,7 +1472,7 @@ class Level implements ChunkManager, Metadatable{
 
 			$drops = $ev->getDrops();
 
-		}elseif($this->server->getExtraProperty("other.enable-break-time-validation", false) and $item !== \null and !$target->isBreakable($item)){
+		}elseif(Server::$breakTimeValidation and $item !== \null and !$target->isBreakable($item)){
 			return \false;
 		}else{
 			$drops = $target->getDrops($item); //Fixes tile entities being deleted before getting drops
