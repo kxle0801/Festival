@@ -1,6 +1,5 @@
 <?php
 
-dfsf
 namespace {
 	function safe_var_dump(){
 		static $cnt = 0;
