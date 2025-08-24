@@ -1,6 +1,6 @@
 <?php
 
-
+asd
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
