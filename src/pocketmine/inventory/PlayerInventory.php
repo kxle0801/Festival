@@ -54,12 +54,6 @@ class PlayerInventory extends BaseInventory{
 	public function setHeldItemIndex($index){
 		if($index >= 0 and $index < $this->getHotbarSize()){
 			$this->itemInHandIndex = $index;
-
-			if($this->getHolder() instanceof Player){
-				$this->sendHeldItem($this->getHolder()->getViewers() + [$this->getHolder()]);
-			}else{
-				$this->sendHeldItem($this->getHolder()->getViewers());
-			}
 		}
 	}
 
