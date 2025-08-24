@@ -1458,20 +1458,20 @@ class Level implements ChunkManager, Metadatable{
 				return \false;
 			}
 
-			$breakTime = $player->isCreative() ? 0.15 : $target->getBreakTime($item);
-			if($player->hasEffect(Effect::SWIFTNESS)){
-				$breakTime *= 0.80 * ($player->getEffect(Effect::SWIFTNESS)->getAmplifier() + 1);
+			if($this->server->getExtraProperty("other.enable-break-time-validation", false)){
+				$breakTime = $player->isCreative() ? 0.15 : $target->getBreakTime($item);
+				if($player->hasEffect(Effect::SWIFTNESS)){
+					$breakTime *= 0.80 * ($player->getEffect(Effect::SWIFTNESS)->getAmplifier() + 1);
+				}
+				if(!$ev->getInstaBreak() and ($player->lastBreak + $breakTime) >= \microtime(\true)){
+					return \false;
+				}
+				$player->lastBreak = \PHP_INT_MAX;
 			}
-
-			if(!$ev->getInstaBreak() and ($player->lastBreak + $breakTime) >= \microtime(\true)){
-				return \false;
-			}
-
-			$player->lastBreak = \PHP_INT_MAX;
 
 			$drops = $ev->getDrops();
 
-		}elseif($item !== \null and !$target->isBreakable($item)){
+		}elseif($this->server->getExtraProperty("other.enable-break-time-validation", false) and $item !== \null and !$target->isBreakable($item)){
 			return \false;
 		}else{
 			$drops = $target->getDrops($item); //Fixes tile entities being deleted before getting drops
